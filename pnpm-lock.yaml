@@ -32,6 +32,9 @@ dependencies:
   reflect-metadata:
     specifier: ^0.2.0
     version: 0.2.2
+  rword:
+    specifier: ^3.2.1
+    version: 3.2.1
   rxjs:
     specifier: ^7.8.1
     version: 7.8.1
@@ -4545,6 +4548,10 @@ packages:
     dependencies:
       queue-microtask: 1.2.3
     dev: true
+
+  /rword@3.2.1:
+    resolution: {integrity: sha512-E1PhzHCM8enXQJoVv0ZKvqMNojkbRqMsv66pD0P4mRl1imb+0g+3Q19CtXobZIqOhi3zNZi1br//U87vc/s6OA==}
+    dev: false
 
   /rxjs@7.8.1:
     resolution: {integrity: sha512-AA3TVj+0A2iuIoQkWEK/tqFjBq2j+6PO6Y0zJcvzLAFhEFIO3HL0vls9hWLncZbAAbK0mar7oZ4V079I/qPMxg==}
