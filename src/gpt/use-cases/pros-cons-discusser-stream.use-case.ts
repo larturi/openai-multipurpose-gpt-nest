@@ -4,10 +4,7 @@ interface Options {
   prompt: string;
 }
 
-export const prosConsDiscusserStreamUseCase = async (
-  openai: OpenAI,
-  options: Options,
-) => {
+export const prosConsDiscusserStreamUseCase = async (openai: OpenAI, options: Options) => {
   const { prompt } = options;
 
   return await openai.chat.completions.create({
@@ -18,7 +15,33 @@ export const prosConsDiscusserStreamUseCase = async (
         content: `
         Se te dara una pregunta y tu tarea es dar una respuesta con pros y contras.
         La respuesta debe ser en formato markdown.
-        Los pros y contras deben estar en una lista
+        Los pros y contras deben estar en una lista con el siguiente formato:
+
+        ## [Terminino1] vs [Terminino2]
+        
+        ### [Terminino1]
+        
+        #### **Pros:**
+        - Pro-1
+        - Pro-2
+        - Pro-n
+        
+        #### **Contras:**
+        - Contra-1
+        - Contra-2
+        - Contra-n
+        
+        ### [Terminino2]
+        
+        #### **Pros:**
+        - Pro-1
+        - Pro-2
+        - Pro-n
+        
+        #### **Contras:**
+        - Contra-1
+        - Contra-2
+        - Contra-n
         `,
       },
       { role: 'user', content: prompt },

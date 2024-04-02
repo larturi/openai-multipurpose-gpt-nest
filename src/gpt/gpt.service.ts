@@ -5,8 +5,9 @@ import {
   orthographyCheckUseCase,
   prosConsDiscusserStreamUseCase,
   prosConsDiscusserUseCase,
+  translateUseCase,
 } from './use-cases';
-import { FamilyWordsDto, OrthographyDto, ProsConsDiscusserDto } from './dtos';
+import { OrthographyDto, ProsConsDiscusserDto, TranslateDto } from './dtos';
 
 @Injectable()
 export class GptService {
@@ -14,27 +15,34 @@ export class GptService {
     apiKey: process.env.OPENAI_API_KEY,
   });
 
-  async orthographyCheck(orthographyDto: OrthographyDto) {
+  async orthographyCheck({ prompt }: OrthographyDto) {
     return await orthographyCheckUseCase(this.openai, {
-      prompt: orthographyDto.prompt,
+      prompt,
     });
   }
 
-  async prosConsDiscusser(prosConsDiscusserDto: ProsConsDiscusserDto) {
+  async prosConsDiscusser({ prompt }: ProsConsDiscusserDto) {
     return await prosConsDiscusserUseCase(this.openai, {
-      prompt: prosConsDiscusserDto.prompt,
+      prompt,
     });
   }
 
-  async prosConsDiscusserStream(prosConsDiscusserDto: ProsConsDiscusserDto) {
+  async prosConsDiscusserStream({ prompt }: ProsConsDiscusserDto) {
     return await prosConsDiscusserStreamUseCase(this.openai, {
-      prompt: prosConsDiscusserDto.prompt,
+      prompt,
     });
   }
 
   async familyWords(word: string) {
     return await familyWordsUseCase(this.openai, {
       word,
+    });
+  }
+
+  async translate({ prompt, lang }: TranslateDto) {
+    return await translateUseCase(this.openai, {
+      prompt,
+      lang,
     });
   }
 }

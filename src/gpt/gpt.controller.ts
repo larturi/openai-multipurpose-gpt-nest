@@ -1,7 +1,7 @@
 import { Response } from 'express';
 import { Body, Controller, HttpStatus, Post, Res } from '@nestjs/common';
 import { GptService } from './gpt.service';
-import { FamilyWordsDto, OrthographyDto, ProsConsDiscusserDto } from './dtos';
+import { OrthographyDto, ProsConsDiscusserDto, TranslateDto } from './dtos';
 import { rword } from 'rword';
 
 @Controller('gpt')
@@ -41,5 +41,10 @@ export class GptController {
     const randomWord = rword.generate();
     console.log(randomWord);
     return this.gptService.familyWords(randomWord);
+  }
+
+  @Post('translate')
+  translate(@Body() translateDto: TranslateDto) {
+    return this.gptService.translate(translateDto);
   }
 }
