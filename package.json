@@ -31,7 +31,8 @@
     "openai": "^4.31.0",
     "reflect-metadata": "^0.2.0",
     "rword": "^3.2.1",
-    "rxjs": "^7.8.1"
+    "rxjs": "^7.8.1",
+    "sharp": "^0.33.3"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",
