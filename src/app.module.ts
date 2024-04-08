@@ -1,9 +1,15 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { GptModule } from './gpt/gpt.module';
+import { appConfig } from './config/app.config';
 
 @Module({
-  imports: [ConfigModule.forRoot(), GptModule],
+  imports: [
+    ConfigModule.forRoot({
+      load: [appConfig],
+    }),
+    GptModule,
+  ],
   controllers: [],
   providers: [],
 })
