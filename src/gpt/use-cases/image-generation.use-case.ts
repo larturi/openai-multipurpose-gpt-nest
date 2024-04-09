@@ -28,11 +28,10 @@ export const imageGenerationUseCase = async (openai: OpenAI, options: Options) =
 
     return {
       url: url,
-      openAiUrl: response.data[0].url,
+      openAIUrl: response.data[0].url,
       revised_prompt: response.data[0].revised_prompt,
     };
   }
-
   const pngImagePath = await downloadImageAsPng(originalImage, true);
   const maskPath = await downloadBase64ImageAsPng(maskImage, true);
 
@@ -51,7 +50,7 @@ export const imageGenerationUseCase = async (openai: OpenAI, options: Options) =
 
   return {
     url: url,
-    openAiUrl: response.data[0].url,
+    openAIUrl: response.data[0].url,
     revised_prompt: response.data[0].revised_prompt,
   };
 };
