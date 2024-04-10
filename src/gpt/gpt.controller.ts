@@ -67,7 +67,6 @@ export class GptController {
   @Post('family-words')
   async familyWords() {
     const randomWord = rword.generate();
-    console.log(randomWord);
     return this.gptService.familyWords(randomWord);
   }
 

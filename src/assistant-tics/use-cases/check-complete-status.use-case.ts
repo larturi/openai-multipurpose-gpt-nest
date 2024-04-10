@@ -10,8 +10,6 @@ export const checkRunCompleteStatusUseCase = async (openAi: OpenAI, options: Opt
 
   const runStatus = await openAi.beta.threads.runs.retrieve(threadId, runId);
 
-  console.log(runStatus.status);
-
   if (runStatus.status === 'completed') {
     return runStatus.status;
   }
