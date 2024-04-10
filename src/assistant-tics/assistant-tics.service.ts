@@ -1,7 +1,13 @@
 import { Injectable } from '@nestjs/common';
 
 import OpenAI from 'openai';
-import { createMessageUseCase, createThreadUseCase } from './use-cases';
+import {
+  checkRunCompleteStatusUseCase,
+  createMessageUseCase,
+  createRunUseCase,
+  createThreadUseCase,
+  getMessageListByThreadUseCase,
+} from './use-cases';
 import { QuestionDto } from './dtos/question.dto';
 
 @Injectable()
@@ -15,9 +21,18 @@ export class AssistantTicsService {
   }
 
   async userQuestion(questionDto: QuestionDto) {
-    const { threadId, question } = questionDto;
+    const { threadId, question, assistantId } = questionDto;
     const message = await createMessageUseCase(this.openai, { threadId, question });
 
-    console.log({ message });
+    const run = await createRunUseCase(this.openai, {
+      threadId,
+      assistantId,
+    });
+
+    await checkRunCompleteStatusUseCase(this.openai, { runId: run.id, threadId: threadId });
+
+    const messages = await getMessageListByThreadUseCase(this.openai, { threadId });
+
+    return messages.reverse();
   }
 }
