@@ -32,6 +32,7 @@ import {
   TextToAudioDto,
   TranslateDto,
 } from './dtos';
+
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Controller('gpt')
@@ -141,7 +142,6 @@ export class GptController {
   }
 
   @Get('image-generation/:fileName')
-  @UseGuards(JwtAuthGuard)
   async getGeneratedImage(@Res() res: Response, @Param('fileName') fileName: string) {
     const imagePath = this.gptService.getGeneratedImage(fileName);
 
