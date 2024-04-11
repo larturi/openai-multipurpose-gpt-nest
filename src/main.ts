@@ -15,7 +15,11 @@ async function bootstrap() {
     }),
   );
 
-  app.enableCors();
+  app.enableCors({
+    origin: 'https://tudominio.com',
+    methods: 'GET,POST,',
+    allowedHeaders: 'Content-Type, Accept',
+  });
 
   app.use(bodyParser.json({ limit: '10mb' }));
   app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
