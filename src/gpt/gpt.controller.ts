@@ -12,6 +12,7 @@ import {
   Post,
   Res,
   UploadedFile,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 
@@ -31,22 +32,26 @@ import {
   TextToAudioDto,
   TranslateDto,
 } from './dtos';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Controller('gpt')
 export class GptController {
   constructor(private readonly gptService: GptService) {}
 
   @Post('orthography-check')
+  @UseGuards(JwtAuthGuard)
   orthographyCheck(@Body() orthographyDto: OrthographyDto) {
     return this.gptService.orthographyCheck(orthographyDto);
   }
 
   @Post('pros-cons-discusser')
+  @UseGuards(JwtAuthGuard)
   prosConsDiscusser(@Body() prosConsDiscusserDto: ProsConsDiscusserDto) {
     return this.gptService.prosConsDiscusser(prosConsDiscusserDto);
   }
 
   @Post('pros-cons-discusser-stream')
+  @UseGuards(JwtAuthGuard)
   async prosConsDicusserStream(
     @Body() prosConsDiscusserDto: ProsConsDiscusserDto,
     @Res() res: Response,
@@ -65,17 +70,20 @@ export class GptController {
   }
 
   @Post('family-words')
+  @UseGuards(JwtAuthGuard)
   async familyWords() {
     const randomWord = rword.generate();
     return this.gptService.familyWords(randomWord);
   }
 
   @Post('translate')
+  @UseGuards(JwtAuthGuard)
   translate(@Body() translateDto: TranslateDto) {
     return this.gptService.translate(translateDto);
   }
 
   @Post('text-to-audio')
+  @UseGuards(JwtAuthGuard)
   async textToAudio(@Body() textToAudioDto: TextToAudioDto, @Res() res: Response) {
     const filePath = await this.gptService.textToAudio(textToAudioDto);
 
@@ -85,6 +93,7 @@ export class GptController {
   }
 
   @Get('text-to-audio/:fileId')
+  @UseGuards(JwtAuthGuard)
   async textToAudioGetter(@Res() res: Response, @Param('fileId') fileId: string) {
     const filePath = await this.gptService.textToAudioGetter(fileId);
 
@@ -94,6 +103,7 @@ export class GptController {
   }
 
   @Post('audio-to-text')
+  @UseGuards(JwtAuthGuard)
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
@@ -125,11 +135,13 @@ export class GptController {
   }
 
   @Post('image-generation')
+  @UseGuards(JwtAuthGuard)
   async imageGeneration(@Body() imageGenerationDto: ImageGenerationDto) {
     return await this.gptService.imageGeneration(imageGenerationDto);
   }
 
   @Get('image-generation/:fileName')
+  @UseGuards(JwtAuthGuard)
   async getGeneratedImage(@Res() res: Response, @Param('fileName') fileName: string) {
     const imagePath = this.gptService.getGeneratedImage(fileName);
 
@@ -139,6 +151,7 @@ export class GptController {
   }
 
   @Post('image-variation')
+  @UseGuards(JwtAuthGuard)
   async imageVariation(@Body() imageVariationDto: ImageVariationDto) {
     return await this.gptService.gererateImageVariation(imageVariationDto);
   }
