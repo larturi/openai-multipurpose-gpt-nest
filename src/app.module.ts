@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { GptModule } from './gpt/gpt.module';
 import { appConfig } from './config/app.config';
 import { AssistantTicsModule } from './assistant-tics/assistant-tics.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -11,6 +12,7 @@ import { AssistantTicsModule } from './assistant-tics/assistant-tics.module';
     }),
     AssistantTicsModule,
     GptModule,
+    AuthModule,
   ],
   controllers: [],
   providers: [],
