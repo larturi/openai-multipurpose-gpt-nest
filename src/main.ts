@@ -16,7 +16,7 @@ async function bootstrap() {
   );
 
   app.enableCors({
-    origin: ['http://localhost:5173', 'http://example.com'],
+    origin: ['http://localhost:5173', 'https://react-nest-gpt-frontend.vercel.app'],
     methods: ['GET', 'POST'],
   });
 
