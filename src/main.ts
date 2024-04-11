@@ -16,9 +16,8 @@ async function bootstrap() {
   );
 
   app.enableCors({
-    origin: 'https://tudominio.com',
-    methods: 'GET,POST,',
-    allowedHeaders: 'Content-Type, Accept',
+    origin: ['http://localhost:5173', 'http://example.com'],
+    methods: ['GET', 'POST'],
   });
 
   app.use(bodyParser.json({ limit: '10mb' }));

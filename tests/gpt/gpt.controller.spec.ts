@@ -4,12 +4,14 @@ import { GptService } from '../../src/gpt/gpt.service';
 import { Response } from 'express';
 import { Readable } from 'stream';
 import { HttpStatus } from '@nestjs/common';
+import { AudioToTextDto, ImageGenerationDto, ImageVariationDto } from 'src/gpt/dtos';
 
 describe('GptController', () => {
   let controller: GptController;
   let service: GptService;
   let mockResponseProsConsStream: Partial<Response>;
   let mockResponseTextToAudio: Partial<Response>;
+  let mockResponseGetImage: Partial<Response>;
 
   beforeEach(async () => {
     mockResponseProsConsStream = {
@@ -20,6 +22,12 @@ describe('GptController', () => {
     };
 
     mockResponseTextToAudio = {
+      setHeader: jest.fn(),
+      status: jest.fn().mockReturnThis(),
+      sendFile: jest.fn(),
+    };
+
+    mockResponseGetImage = {
       setHeader: jest.fn(),
       status: jest.fn().mockReturnThis(),
       sendFile: jest.fn(),
@@ -43,6 +51,17 @@ describe('GptController', () => {
             familyWords: jest.fn().mockResolvedValue({}),
             translate: jest.fn().mockResolvedValue({}),
             textToAudio: jest.fn().mockResolvedValue('/path/to/fake-audio.mp3'),
+            audioToText: jest.fn().mockResolvedValue('Transcription result'),
+            imageGeneration: jest.fn().mockResolvedValue({
+              url: 'http://example.com/generated-image.png',
+              openAIUrl: 'http://example.com/generated-image.png',
+              revised_prompt: 'Revised prompt',
+            }),
+            getGeneratedImage: jest.fn().mockReturnValue('1712498822085.png'),
+            gererateImageVariation: jest.fn().mockResolvedValue({
+              url: `${process.env.SERVER_URL}/gpt/image-generation/1712585433163.png`,
+              openAiUrl: 'https://oaidalleapiprodscus.blob.core.windows.net/private/mock',
+            }),
           },
         },
       ],
@@ -116,5 +135,70 @@ describe('GptController', () => {
     expect(mockResponseTextToAudio.setHeader).toHaveBeenCalledWith('Content-Type', 'audio/mp3');
     expect(mockResponseTextToAudio.status).toHaveBeenCalledWith(HttpStatus.OK);
     expect(mockResponseTextToAudio.sendFile).toHaveBeenCalledWith('/path/to/fake-audio.mp3');
+  });
+
+  it('should process an audio file and return the transcription', async () => {
+    const mockFileAudioToText: Express.Multer.File = {
+      fieldname: 'file',
+      originalname: 'testaudio.mp3',
+      encoding: '7bit',
+      mimetype: 'audio/mp3',
+      destination: './generated/uploads',
+      filename: '1577836800000.mp3',
+      path: './generated/uploads/1577836800000.mp3',
+      size: 1024 * 1024,
+      stream: new Readable(),
+      buffer: undefined,
+    };
+
+    const audioToTextDto: AudioToTextDto = {
+      prompt: 'prompt',
+    };
+
+    const result = await controller.audioToText(mockFileAudioToText, audioToTextDto);
+
+    expect(service.audioToText).toHaveBeenCalledWith(mockFileAudioToText, audioToTextDto);
+    expect(result).toEqual('Transcription result');
+  });
+
+  it('should call imageGeneration method and return image URL', async () => {
+    const imageGenerationDto: ImageGenerationDto = {
+      prompt: 'A beautiful landscape',
+    };
+
+    const result = await controller.imageGeneration(imageGenerationDto);
+
+    expect(service.imageGeneration).toHaveBeenCalledWith(imageGenerationDto);
+
+    expect(result).toEqual({
+      url: 'http://example.com/generated-image.png',
+      openAIUrl: 'http://example.com/generated-image.png',
+      revised_prompt: 'Revised prompt',
+    });
+  });
+
+  it('should send an image file: /image-generation/:fileName', async () => {
+    const fileName = '1712498822085.png';
+    await controller.getGeneratedImage(mockResponseGetImage as Response, fileName);
+
+    expect(service.getGeneratedImage).toHaveBeenCalledWith(fileName);
+    expect(mockResponseGetImage.setHeader).toHaveBeenCalledWith('Content-Type', 'image/png');
+    expect(mockResponseGetImage.status).toHaveBeenCalledWith(HttpStatus.OK);
+    expect(mockResponseGetImage.sendFile).toHaveBeenCalledWith('1712498822085.png');
+  });
+
+  it('should call generateImageVariation method and return image URL', async () => {
+    const imageVariationDto: ImageVariationDto = {
+      baseImage: `${process.env.SERVER_URL}/gpt/image-generation/1712585433163.png`,
+    };
+
+    const result = await controller.imageVariation(imageVariationDto);
+
+    expect(service.gererateImageVariation).toHaveBeenCalledWith(imageVariationDto);
+
+    expect(result).toEqual({
+      url: `${process.env.SERVER_URL}/gpt/image-generation/1712585433163.png`,
+      openAiUrl: 'https://oaidalleapiprodscus.blob.core.windows.net/private/mock',
+    });
   });
 });
